@@ -52,4 +52,6 @@ You can check this by
 
 To add more nodes to the network, simply follow the same steps!
 
+This repository also contains guide for generating ether through mining and then transfering it between nodes (Check out SendingEther.md)
+
 

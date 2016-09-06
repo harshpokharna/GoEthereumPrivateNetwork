@@ -7,21 +7,49 @@ brew tap ethereum/ethereum
 brew install ethereum
 ~~~
 
-Install gethdev (gethdev is a small wrapper around the geth command, which automatically sets some parameters to create a private test blockchain)
+Now, we want to start a node with a custom genesis block in it's own data directory and assign some ports to it for listening
+
+Init a Custom Genesis Block in a data directory (customgenesis.json is available in this repository)
 ~~~
-npm install -g gethdev
+eth --datadir "/Users/user/workspace/Ethereum/Data/node1" init "/Users/user/workspace/Ethereum/Data/customgenesis.json"
 ~~~
 
-Close all other apps (Mist, etc) that might be using geth. Open a terminal window 
+Create a new account
 ~~~
-gethdev
+geth --datadir "/Users/user/workspace/Ethereum/Data/node1" account new
 ~~~
 
-The output of the above command will contain the path to an ipc file. Note it down.
+Start the node
+~~~
+geth --identity "Node1" --datadir "/Users/user/workspace/Ethereum/Data/node1" --rpc --rpcport "8080" --rpccorsdomain "*" --port "30303" --nodiscover --rpcapi "db,eth,net,web3" --networkid 42 console
+~~~
 
-Open another terminal window (keep the previous window running)
+The node has now started and you will see a Javascript console in your terminal window.
+
+Now open another terminal window and repeat the above steps for another node (which means a different data directory, different identity, different rpcport, different port but same networkid)
+
+Once the other node has also started, type the following command in the terminal window
 ~~~
-get attach ipc:path/to/ipc/file
+>admin.nodeInfo
 ~~~
+
+You will get something like
+~~~
+"enode://760b26b805cb2b3ad14761406fd469b1c317423d5f40c39ceedb1d083a5fe7b2022ab78ed73b34a41018e5fa99d53b5ad7ad0e3452a43f6846116b24a426dff5@[::]:30304?discport=0"
+~~~
+
+Go to the other terminal window
+~~~
+admin.addPeer("enode://760b26b805cb2b3ad14761406fd469b1c317423d5f40c39ceedb1d083a5fe7b2022ab78ed73b34a41018e5fa99d53b5ad7ad0e3452a43f6846116b24a426dff5@[::]:30304?discport=0")
+~~~
+
+Now both the nodes are connected
+
+You can check this by
+~~~
+>admin.peers
+~~~
+
+To add more nodes to the network, simply follow the same steps!
 
 
